@@ -4,3 +4,4 @@ uv.lock
 csv_to_json.py
 pyproject.toml
 .env
+.enviar_para_postgres.py

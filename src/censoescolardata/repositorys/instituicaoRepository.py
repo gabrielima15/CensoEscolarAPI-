@@ -1,3 +1,139 @@
+#
+# from models.instituicaoEnsino import InstituicaoEnsinoSchema, InstituicaoEnsino
+# from helpers.database import get_connection
+#
+# instituicaoEnsino_schema = InstituicaoEnsinoSchema()
+#
+#
+# def row_to_instituicaoEnsino(row):
+#     return InstituicaoEnsino(
+#         id=row[0],
+#         co_entidade=row[1],
+#         no_entidade=row[2],
+#         no_uf=row[3],
+#         sg_uf=row[4],
+#         co_uf=row[5],
+#         no_municipio=row[6],
+#         co_municipio=row[7],
+#         nu_ano_censo=row[8],
+#         qt_mat_bas=row[9],
+#         qt_mat_inf=row[10],
+#         qt_mat_fund=row[11],
+#         qt_mat_med=row[12],
+#         qt_mat_prof=row[13],
+#         qt_mat_eja=row[14],
+#         qt_mat_esp=row[15]
+#     )
+#
+#
+#
+# def estrutura_tabela():
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("""
+#         CREATE TABLE IF NOT EXISTS instituicoes_ensino (
+#             id_instituicao SERIAL PRIMARY KEY,
+#             co_entidade INTEGER NOT NULL DEFAULT 0,
+#             no_entidade TEXT NOT NULL DEFAULT '',
+#             no_uf TEXT NOT NULL DEFAULT '',
+#             sg_uf TEXT NOT NULL DEFAULT '',
+#             co_uf INTEGER NOT NULL DEFAULT 0,
+#             no_municipio TEXT NOT NULL DEFAULT '',
+#             co_municipio INTEGER NOT NULL DEFAULT 0,
+#             nu_ano_censo INTEGER NOT NULL DEFAULT 0,
+#             qt_mat_bas INTEGER DEFAULT 0,
+#             qt_mat_inf INTEGER DEFAULT 0,
+#             qt_mat_fund INTEGER DEFAULT 0,
+#             qt_mat_med INTEGER DEFAULT 0,
+#             qt_mat_prof INTEGER DEFAULT 0,
+#             qt_mat_eja INTEGER DEFAULT 0,
+#             qt_mat_esp INTEGER DEFAULT 0,
+#             ativo INTEGER DEFAULT 1
+#         );
+#     """)
+#     conn.commit()
+#
+#
+# def buscar_todas_instituicao(per_page, offset):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#
+#     cursor.execute(
+#         "SELECT * FROM instituicoes_ensino WHERE ativo = 1 LIMIT %s OFFSET %s",
+#         (per_page, offset)
+#     )
+#     rows = cursor.fetchall()
+#
+#     cursor.execute("SELECT COUNT(*) FROM instituicoes_ensino WHERE ativo = 1")
+#     total_registros = cursor.fetchone()[0]
+#
+#     conn.close()
+#     return rows, total_registros
+#
+# def buscar_por_id(id):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("SELECT * FROM instituicoes_ensino WHERE id_instituicao = %s AND ativo = 1", (id,))
+#     row = cursor.fetchone()
+#     conn.close()
+#     return row
+#
+# def inserir_instituicao(dados):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("""
+#         INSERT INTO instituicoes_ensino (
+#             co_entidade, no_entidade, no_uf, sg_uf, co_uf,
+#             no_municipio, co_municipio, nu_ano_censo, qt_mat_bas, qt_mat_inf,
+#             qt_mat_fund, qt_mat_med, qt_mat_prof, qt_mat_eja, qt_mat_esp
+#         ) VALUES (%s, %s, %s,%s , %s, %s,%s , %s, %s, %s, %s, %s, %s, %s, %s)
+#     """, (
+#         dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
+#         dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
+#         dados['co_municipio'], dados['nu_ano_censo'],
+#         dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
+#         dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
+#         dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
+#         dados.get('qt_mat_esp', 0)
+#     ))
+#     novo_id = cursor.fetchone()[0]
+#     conn.commit()
+#     conn.close()
+#     return novo_id
+#
+# def atualizar_instituicao(id, dados):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("""
+#         UPDATE instituicoes_ensino SET
+#             co_entidade = %s, no_entidade = %s, no_uf = %s, sg_uf = %s, co_uf = %s,
+#             no_municipio = %s, co_municipio = %s, nu_ano_censo = %s, qt_mat_bas = %s,
+#             qt_mat_inf = %s, qt_mat_fund = %s, qt_mat_med = %s, qt_mat_prof = %s,
+#             qt_mat_eja = %s, qt_mat_esp = %s
+#         WHERE id_instituicao = %s AND ativo = 1
+#     """, (
+#         dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
+#         dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
+#         dados['co_municipio'], dados['nu_ano_censo'],
+#         dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
+#         dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
+#         dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
+#         dados.get('qt_mat_esp', 0),
+#         id
+#     ))
+#     linhas_afetadas = cursor.rowcount
+#     conn.commit()
+#     conn.close()
+#     return linhas_afetadas
+#
+# def desativar_instituicao(id):
+#     conn = get_connection()
+#     cursor = conn.cursor()
+#     cursor.execute("UPDATE instituicoes_ensino SET ativo = 0 WHERE id_instituicao = %s AND ativo = 1", (id,))
+#     linhas_afetadas = cursor.rowcount
+#     conn.commit()
+#     conn.close()
+#     return linhas_afetadas
 
 
 from models.instituicaoEnsino import InstituicaoEnsinoSchema, InstituicaoEnsino
@@ -27,32 +163,100 @@ def row_to_instituicaoEnsino(row):
     )
 
 
-
 def estrutura_tabela():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS instituicoes_ensino (
-            id_instituicao INTEGER PRIMARY KEY AUTOINCREMENT,
-            co_entidade INTEGER NOT NULL DEFAULT 0,
-            no_entidade TEXT NOT NULL DEFAULT '',
-            no_uf TEXT NOT NULL DEFAULT '',
-            sg_uf TEXT NOT NULL DEFAULT '',
-            co_uf INTEGER NOT NULL DEFAULT 0,
-            no_municipio TEXT NOT NULL DEFAULT '',
-            co_municipio INTEGER NOT NULL DEFAULT 0,
-            nu_ano_censo INTEGER NOT NULL DEFAULT 0,
-            qt_mat_bas INTEGER DEFAULT 0,
-            qt_mat_inf INTEGER DEFAULT 0,
-            qt_mat_fund INTEGER DEFAULT 0,
-            qt_mat_med INTEGER DEFAULT 0,
-            qt_mat_prof INTEGER DEFAULT 0,
-            qt_mat_eja INTEGER DEFAULT 0,
-            qt_mat_esp INTEGER DEFAULT 0,
-            ativo INTEGER DEFAULT 1
-        );
-    """)
+                   CREATE TABLE IF NOT EXISTS instituicoes_ensino
+                   (
+                       id_instituicao
+                       SERIAL
+                       PRIMARY
+                       KEY,
+                       co_entidade
+                       INTEGER
+                       NOT
+                       NULL
+                       DEFAULT
+                       0,
+                       no_entidade
+                       TEXT
+                       NOT
+                       NULL
+                       DEFAULT
+                       '',
+                       no_uf
+                       TEXT
+                       NOT
+                       NULL
+                       DEFAULT
+                       '',
+                       sg_uf
+                       TEXT
+                       NOT
+                       NULL
+                       DEFAULT
+                       '',
+                       co_uf
+                       INTEGER
+                       NOT
+                       NULL
+                       DEFAULT
+                       0,
+                       no_municipio
+                       TEXT
+                       NOT
+                       NULL
+                       DEFAULT
+                       '',
+                       co_municipio
+                       INTEGER
+                       NOT
+                       NULL
+                       DEFAULT
+                       0,
+                       nu_ano_censo
+                       INTEGER
+                       NOT
+                       NULL
+                       DEFAULT
+                       0,
+                       qt_mat_bas
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_inf
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_fund
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_med
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_prof
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_eja
+                       INTEGER
+                       DEFAULT
+                       0,
+                       qt_mat_esp
+                       INTEGER
+                       DEFAULT
+                       0,
+                       ativo
+                       INTEGER
+                       DEFAULT
+                       1
+                   );
+                   """)
     conn.commit()
+    cursor.close()
 
 
 def buscar_todas_instituicao(per_page, offset):
@@ -60,7 +264,7 @@ def buscar_todas_instituicao(per_page, offset):
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT * FROM instituicoes_ensino WHERE ativo = 1 LIMIT ? OFFSET ?",
+        "SELECT * FROM instituicoes_ensino WHERE ativo = 1 LIMIT %s OFFSET %s",
         (per_page, offset)
     )
     rows = cursor.fetchall()
@@ -68,70 +272,88 @@ def buscar_todas_instituicao(per_page, offset):
     cursor.execute("SELECT COUNT(*) FROM instituicoes_ensino WHERE ativo = 1")
     total_registros = cursor.fetchone()[0]
 
-    conn.close()
+    cursor.close()
     return rows, total_registros
+
 
 def buscar_por_id(id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM instituicoes_ensino WHERE id_instituicao = ? AND ativo = 1", (id,))
+    cursor.execute("SELECT * FROM instituicoes_ensino WHERE id_instituicao = %s AND ativo = 1", (id,))
     row = cursor.fetchone()
-    conn.close()
+    cursor.close()
     return row
+
 
 def inserir_instituicao(dados):
     conn = get_connection()
     cursor = conn.cursor()
+
+    # ADICIONADO 'RETURNING id_instituicao' AQUI
     cursor.execute("""
-        INSERT INTO instituicoes_ensino (
-            co_entidade, no_entidade, no_uf, sg_uf, co_uf,
-            no_municipio, co_municipio, nu_ano_censo, qt_mat_bas, qt_mat_inf,
-            qt_mat_fund, qt_mat_med, qt_mat_prof, qt_mat_eja, qt_mat_esp
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
-        dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
-        dados['co_municipio'], dados['nu_ano_censo'],
-        dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
-        dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
-        dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
-        dados.get('qt_mat_esp', 0)
-    ))
-    novo_id = cursor.lastrowid
+                   INSERT INTO instituicoes_ensino (co_entidade, no_entidade, no_uf, sg_uf, co_uf,
+                                                    no_municipio, co_municipio, nu_ano_censo, qt_mat_bas, qt_mat_inf,
+                                                    qt_mat_fund, qt_mat_med, qt_mat_prof, qt_mat_eja, qt_mat_esp)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id_instituicao;
+                   """, (
+                       dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
+                       dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
+                       dados['co_municipio'], dados['nu_ano_censo'],
+                       dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
+                       dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
+                       dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
+                       dados.get('qt_mat_esp', 0)
+                   ))
+
+    novo_id = cursor.fetchone()[0]
     conn.commit()
-    conn.close()
+    cursor.close()
     return novo_id
+
 
 def atualizar_instituicao(id, dados):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE instituicoes_ensino SET
-            co_entidade = ?, no_entidade = ?, no_uf = ?, sg_uf = ?, co_uf = ?,
-            no_municipio = ?, co_municipio = ?, nu_ano_censo = ?, qt_mat_bas = ?,
-            qt_mat_inf = ?, qt_mat_fund = ?, qt_mat_med = ?, qt_mat_prof = ?,
-            qt_mat_eja = ?, qt_mat_esp = ?
-        WHERE id_instituicao = ? AND ativo = 1
-    """, (
-        dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
-        dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
-        dados['co_municipio'], dados['nu_ano_censo'],
-        dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
-        dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
-        dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
-        dados.get('qt_mat_esp', 0),
-        id
-    ))
+                   UPDATE instituicoes_ensino
+                   SET co_entidade  = %s,
+                       no_entidade  = %s,
+                       no_uf        = %s,
+                       sg_uf        = %s,
+                       co_uf        = %s,
+                       no_municipio = %s,
+                       co_municipio = %s,
+                       nu_ano_censo = %s,
+                       qt_mat_bas   = %s,
+                       qt_mat_inf   = %s,
+                       qt_mat_fund  = %s,
+                       qt_mat_med   = %s,
+                       qt_mat_prof  = %s,
+                       qt_mat_eja   = %s,
+                       qt_mat_esp   = %s
+                   WHERE id_instituicao = %s
+                     AND ativo = 1
+                   """, (
+                       dados['co_entidade'], dados['no_entidade'], dados['no_uf'],
+                       dados['sg_uf'], dados['co_uf'], dados['no_municipio'],
+                       dados['co_municipio'], dados['nu_ano_censo'],
+                       dados.get('qt_mat_bas', 0), dados.get('qt_mat_inf', 0),
+                       dados.get('qt_mat_fund', 0), dados.get('qt_mat_med', 0),
+                       dados.get('qt_mat_prof', 0), dados.get('qt_mat_eja', 0),
+                       dados.get('qt_mat_esp', 0),
+                       id
+                   ))
     linhas_afetadas = cursor.rowcount
     conn.commit()
-    conn.close()
+    cursor.close()
     return linhas_afetadas
+
 
 def desativar_instituicao(id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE instituicoes_ensino SET ativo = 0 WHERE id_instituicao = ? AND ativo = 1", (id,))
+    cursor.execute("UPDATE instituicoes_ensino SET ativo = 0 WHERE id_instituicao = %s AND ativo = 1", (id,))
     linhas_afetadas = cursor.rowcount
     conn.commit()
-    conn.close()
+    cursor.close()
     return linhas_afetadas

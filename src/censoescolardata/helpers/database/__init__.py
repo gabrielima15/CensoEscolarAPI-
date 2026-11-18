@@ -1,16 +1,24 @@
-import sqlite3
+import os
+import psycopg
 from flask import g
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from helpers.application import app
-from helpers.enviroment import enviroment
-
-DATABASE = enviroment.get("DB_NAME")
-
 
 def get_connection():
     conn = getattr(g, '_database', None)
     if conn is None:
-        conn = g._database = sqlite3.connect(DATABASE)
+        # se der error coloque o nome dos dados que precisa
+        # depois do nome da variavel de ambiente.
+        conn = g._database = psycopg.connect(
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT")
+        )
     return conn
 
 

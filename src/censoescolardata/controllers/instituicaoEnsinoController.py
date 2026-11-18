@@ -8,13 +8,14 @@ from services.instituicaoService import listar_instituicoes_paginadas, obter_por
 instituicoes_bp = Blueprint('instituicoes', __name__, url_prefix='/instituicoes')
 
 # passou
+print("antes de entrar")
 @instituicoes_bp.get("")
 def get_instituicoesEnsinoAll():
     print("entrou no controller para rodar o codigo.")
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=10, type=int)
 
-    # Delega a lógica para o service
+    print("entrando no service")
     resposta = listar_instituicoes_paginadas(page, per_page)
 
     return resposta, 200
